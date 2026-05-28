@@ -1,13 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/lib/supabase";
 import { loginWithIdentifier } from "@/lib/login.functions";
-import { MiProjetDashboard } from "./admin/miprojet";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
+
+const MiProjetDashboard = lazy(() =>
+  import("./admin/miprojet").then((m) => ({ default: m.MiProjetDashboard })),
+);
 
 export const Route = createFileRoute("/miprojet")({
   ssr: false,
@@ -53,7 +57,11 @@ function MiprojetGate() {
   }
 
   if (state === "checking") return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Vérification MIPROJET…</div>;
-  if (state === "ready") return <MiProjetDashboard />;
+  if (state === "ready") return (
+    <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Chargement du back-office…</div>}>
+      <MiProjetDashboard />
+    </Suspense>
+  );
 
   return (
     <main className="grid min-h-screen place-items-center bg-background px-4">
@@ -63,7 +71,7 @@ function MiprojetGate() {
           <form onSubmit={submit} className="mt-6 space-y-4">
             {error && <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
             <div><Label htmlFor="miprojet-id">Identifiant</Label><Input id="miprojet-id" value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" required /></div>
-            <div><Label htmlFor="miprojet-pass">Mot de passe</Label><Input id="miprojet-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required /></div>
+            <div><Label htmlFor="miprojet-pass">Mot de passe</Label><PasswordInput id="miprojet-pass" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required /></div>
             <Button className="w-full" disabled={loading}>{loading ? "Connexion…" : "Se connecter"}</Button>
           </form>
         </CardContent>
