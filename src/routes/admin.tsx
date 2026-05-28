@@ -22,7 +22,7 @@ const MUGEC_ADMIN_ROLES = new Set([
 
 function AdminGate() {
   const [state, setState] = useState<"checking" | "login" | "ready">("checking");
-  const [identifier, setIdentifier] = useState("mugecadmin");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

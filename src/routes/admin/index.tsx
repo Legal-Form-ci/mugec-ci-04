@@ -69,7 +69,8 @@ function AdminDashboard() {
       .order("created_at", { ascending: false })
       .range(page * PAGE, page * PAGE + PAGE - 1);
     if (search.trim()) {
-      const s = `%${search.trim()}%`;
+      const safe = search.trim().replace(/[(),*\\]/g, " ").slice(0, 100);
+      const s = `%${safe}%`;
       q = q.or(`nom.ilike.${s},prenoms.ilike.${s},telephone.ilike.${s},matricule.ilike.${s},email.ilike.${s}`);
     }
     const { data, error } = await q;
