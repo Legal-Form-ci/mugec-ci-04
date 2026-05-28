@@ -16,7 +16,7 @@ export const Route = createFileRoute("/miprojet")({
 
 function MiprojetGate() {
   const [state, setState] = useState<"checking" | "login" | "ready">("checking");
-  const [identifier, setIdentifier] = useState("admininoce");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
